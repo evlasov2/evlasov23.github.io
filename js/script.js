@@ -1,100 +1,56 @@
 
-$(document).ready(function(){
-    $('.carusel__inner').slick({
-        speed: 1200,
-        adaptiveHeight: true,
-        prevArrow:  '<button type="button" class="slick-prev"><img src="icons/chevron-left-solid.png"></img></button>',
-        nextArrow: '<button type="button" class="slick-next"><img src="icons/chevron-right-solid.png"></img></button>',
-        responsive:[
-            {
-                breakpoint: 992,
-                settings: {
-                dots: true,
-                arrows:false,
-                dotsClass: 'slick-dots custom-dots',
-            }
-        }
-        ]
-    } );
-    $('ul.catalog__tabs').on('click', 'li:not(.catalog__tab_active)', function() {
-        $(this)
-          .addClass('catalog__tab_active').siblings().removeClass('catalog__tab_active')
-          .closest('div.container').find('div.catalog__content').removeClass('catalog__content_active').eq($(this).index()).addClass('catalog__content_active');
-    });
-    function toggleSlide(item) {
-        $(item).each(function(i) {
-            $(this).on('click', function(e) {
-                e.preventDefault();
-                $('.catalog-item__content').eq(i).toggleClass('catalog-item__content_active');
-                $('.catalog-item__list').eq(i).toggleClass('catalog-item__list_active');
-            })
-        });
-    };
+const hamburger = document.querySelector('.hamburger'),
+      menu = document.querySelector('.menu'),
+      closeElem = document.querySelector('.menu__close');
 
-    toggleSlide('.catalog-item__link');
-    toggleSlide('.catalog-item__back');
+hamburger.addEventListener('click', () => {
+    menu.classList.add('active');
+});
 
-    // Modal
+closeElem.addEventListener('click', () => {
+    menu.classList.remove('active');
+});
 
-    $('[data-modal=consultation]').on('click', function() {
-        $('.overlay, #consultation').fadeIn('slow');
-    });
-    $('.modal__close').on('click', function(){
-        $('.overlay, #consultation, #thanks, #order ').fadeOut('slow');
-    });
-    $('.button_mini').each(function(i){
-        $(this).on('click', function(){
-            $('#order .modal__descr').text($('.catalog-item__subtitle').eq(i).text());
-            $('.overlay, #order').fadeIn('slow');
-        })
-    });
-    function validateForms(form){
-        $(form).validate({
-            rules: {
-                name: {
-                    required: true,
-                    minlength: 2
-                },
-                phone: "required",
-                email: {
-                    required: true,
-                    email: true
-                }
-            },
-            messages: {
-                name: {
-                    required: "Пожалуйста, введите свое имя",
-                    minlength: jQuery.validator.format("Введите {0} символа!")
-                  },
-                phone: "Пожалуйста, введите свой номер телефона",
-                email: {
-                  required: "Пожалуйста, введите свою почту",
-                  email: "Неправильно введен адрес почты"
-                }
-            }
-        });
-    };
+const counters = document.querySelectorAll('.skills__ratings-counter'),
+    lines = document.querySelectorAll('.skills__ratings-line');
 
-    validateForms('#consultation-form');
-    validateForms('#consultation form');
-    validateForms('#order form');
+counters.forEach( (item, i) => {
+    lines[i].style.width = item.innerHTML;
+});
+// Получаем элементы слайдера
+const slider = document.querySelector('.slider');
+const prevButton = document.querySelector('.prev-button');
+const nextButton = document.querySelector('.next-button');
+const slides = Array.from(slider.querySelectorAll('img'));
+const slideCount = slides.length;
+let slideIndex = 0;
 
-    $('input[name=phone]').mask("+7 (999) 999-99-99");
+// Устанавливаем обработчики событий для кнопок
+prevButton.addEventListener('click', showPreviousSlide);
+nextButton.addEventListener('click', showNextSlide);
 
-    // Smooth scroll and pageup
+// Функция для показа предыдущего слайда
+function showPreviousSlide() {
+  slideIndex = (slideIndex - 1 + slideCount) % slideCount;
+  updateSlider();
+}
 
-    $(window).scroll(function() {
-        if ($(this).scrollTop() > 1600) {
-            $('.pageup').fadeIn();
-        } else {
-            $('.pageup').fadeOut();
-        }
-    });
+// Функция для показа следующего слайда
+function showNextSlide() {
+  slideIndex = (slideIndex + 1) % slideCount;
+  updateSlider();
+}
 
-    $("a[href^='#']").click(function(){
-        const _href = $(this).attr("href");
-        $("html, body").animate({scrollTop: $(_href).offset().top+"px"});
-        return false;
-    });
-    new WOW().init();
-  }); 
+// Функция для обновления отображения слайдера
+function updateSlider() {
+  slides.forEach((slide, index) => {
+    if (index === slideIndex) {
+      slide.style.display = 'block';
+    } else {
+      slide.style.display = 'none';
+    }
+  });
+}
+
+// Инициализация слайдера
+updateSlider();
